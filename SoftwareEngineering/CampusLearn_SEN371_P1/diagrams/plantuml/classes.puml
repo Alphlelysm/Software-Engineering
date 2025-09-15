@@ -1,0 +1,150 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  +UUID id
+  +String name
+  +String email
+  +Role role
+  +authenticate(password): boolean
+}
+
+class Student {
+  +List<Topic> topicsCreated
+  +List<Subscription> subscriptions
+  +createTopic(title, description, module): Topic
+  +subscribeToTopic(topic): void
+}
+
+class Tutor {
+  +List<Module> modules
+  +uploadMaterial(topic, material): LearningMaterial
+  +respondToQuestion(question, text): Response
+}
+
+User <|-- Student
+User <|-- Tutor
+
+class Module {
+  +String code
+  +String name
+}
+
+class Topic {
+  +UUID id
+  +String title
+  +String description
+  +TopicStatus status
+  +Student createdBy
+  +Module module
+  +ZonedDateTime createdAt
+  +addMaterial(material): void
+  +addQuestion(question): void
+  +subscribe(student): Subscription
+}
+
+abstract class LearningMaterial {
+  +UUID id
+  +String title
+  +String description
+  +URI uri
+  +MaterialType type
+  +Tutor uploadedBy
+  +Module module
+  +ZonedDateTime uploadedAt
+}
+
+LearningMaterial <|-- VideoMaterial
+LearningMaterial <|-- DocumentMaterial
+LearningMaterial <|-- InteractiveExercise
+
+class Subscription {
+  +Student student
+  +Topic topic
+  +ZonedDateTime subscribedAt
+}
+
+class Question {
+  +UUID id
+  +String text
+  +Student askedBy
+  +List<Response> responses
+  +ZonedDateTime askedAt
+}
+
+class Response {
+  +UUID id
+  +String text
+  +Tutor respondedBy
+  +ZonedDateTime respondedAt
+}
+
+class Quiz {
+  +UUID id
+  +String title
+  +List<QuizQuestion> questions
+  +addQuestion(question): void
+}
+
+class QuizQuestion {
+  +UUID id
+  +String prompt
+  +List<QuizOption> options
+  +int correctIndex
+}
+
+class QuizOption {
+  +UUID id
+  +String text
+  +boolean isCorrect
+}
+
+class QuizAttempt {
+  +UUID id
+  +Student student
+  +Quiz quiz
+  +int score
+  +ZonedDateTime attemptedAt
+}
+
+class Conversation {
+  +UUID id
+  +List<Message> messages
+  +addMessage(message): void
+}
+
+class Message {
+  +UUID id
+  +User from
+  +User to
+  +String content
+  +ZonedDateTime sentAt
+}
+
+class Notification {
+  +UUID id
+  +User recipient
+  +String message
+  +ZonedDateTime sentAt
+  +boolean read
+}
+
+Student "1" --> "many" Subscription : has >
+Topic "1" --> "many" Subscription : receives >
+Student "1" --> "many" Topic : creates >
+Tutor "1" --> "many" Topic : contributes >
+Topic "1" o-- "many" LearningMaterial : contains
+Topic "1" o-- "many" Question : contains
+Question "1" o-- "many" Response : contains
+Topic "1" --> "many" Quiz : has
+Quiz "1" o-- "many" QuizQuestion : contains
+QuizQuestion "1" o-- "many" QuizOption : contains
+Student "1" --> "many" QuizAttempt : makes
+Quiz "1" --> "many" QuizAttempt : evaluated by
+User "1" --> "many" Conversation : participates
+Conversation "1" o-- "many" Message : contains
+User "1" --> "many" Notification : receives
+Topic "many" --> "1" Module : in
+Tutor "many" --> "many" Module : teaches
+
+@enduml
