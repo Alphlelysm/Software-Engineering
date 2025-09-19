@@ -17,17 +17,14 @@ It provides the user interface for browsing courses, logging in, and interacting
 ## 🚀 Getting Started
 
 ### 1. Clone the repo
-```bash
-git clone https://github.com/your-username/campuslearn-frontend.git
-cd campuslearn-frontend
+`git clone https://github.com/your-username/campuslearn-frontend.git`
+`cd campuslearn-frontend`
 
 ### 2. Install dependencies
-```bash
-npm install
+`npm install`
 
 ### 3. Run the development server
-```bash
-npm start
+`npm start`
 
 The app will be available at:
 `http://localhost:3000`
